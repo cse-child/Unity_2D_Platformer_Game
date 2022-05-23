@@ -19,8 +19,11 @@ public class GameManager : MonoBehaviour
     public Text UIStage;
     public GameObject UIRestartBtn;
 
+    public GameObject Back_1; // 배경
+
     void Update()
     {
+        // 점수 업데이트
         UIPoint.text = (totalPoint + stagePoint).ToString();
     }
 
@@ -36,6 +39,8 @@ public class GameManager : MonoBehaviour
             PlayerReposition();
 
             UIStage.text = "STAGE " + (stageIndex+1);
+
+            Back_1.SetActive(false);
         }
         else // Game Clear
         {

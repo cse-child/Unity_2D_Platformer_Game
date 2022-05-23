@@ -30,6 +30,7 @@ public class PlayerMove : MonoBehaviour
         audioSource = GetComponent<AudioSource>();
     }
 
+    // 게임 소리 파트
     void PlaySound(string action)
     {
         switch (action)
@@ -110,15 +111,16 @@ public class PlayerMove : MonoBehaviour
         if(rigid.velocity.y < 0)
         {
             Debug.DrawRay(rigid.position, Vector3.down, new Color(0, 1, 0));
-
+            // 레이캐스트를 이용한 플랫폼 탐지
             RaycastHit2D rayHit = Physics2D.Raycast(rigid.position, Vector2.down, 1, LayerMask.GetMask("Platform"));
 
             if (rayHit.collider != null)
             {
                 if (rayHit.distance < 0.5f)
                 {
-                    // Debug.Log(rayHit.collider.name);
-                    anim.SetBool("isJumping", false);
+                    Debug.Log(rayHit.collider.name);
+                    anim.SetBool("isJumping", false); // 바닥에 닿으면 점프 멈춤
+                    
                 }
             }
         }
@@ -169,7 +171,8 @@ public class PlayerMove : MonoBehaviour
             //Sound
             PlaySound("ITEM");
         }
-        else if (collision.gameObject.tag == "Finish")
+        // 캐릭터가 Finish 깃발에 닿았을 때 -> 다음 스테이지 넘어감
+        else if (collision.gameObject.tag == "Finish") 
         {
             // Next Stage
             gameManager.NextStage();
@@ -181,6 +184,7 @@ public class PlayerMove : MonoBehaviour
     void OnAttack(Transform enemy)
     {
         // Point
+        // 몬스터 한마리당 100점
         gameManager.stagePoint += 100;
         // Reaction Force
         rigid.AddForce(Vector2.up * 5, ForceMode2D.Impulse);
