@@ -11,6 +11,8 @@ public class PlayerMove : MonoBehaviour
     public AudioClip audioItem;
     public AudioClip audioDie;
     public AudioClip audioFinish;
+    public AudioClip audioPotion;
+    public AudioClip audioDrop;
     public float maxSpeed;
     public float jumpPower;
 
@@ -19,6 +21,7 @@ public class PlayerMove : MonoBehaviour
     BoxCollider2D boxCollider;
     Animator anim;
     AudioSource audioSource;
+    
 
     
     void Awake()
@@ -31,7 +34,7 @@ public class PlayerMove : MonoBehaviour
     }
 
     // 게임 소리 파트
-    void PlaySound(string action)
+    public void PlaySound(string action)
     {
         switch (action)
         {
@@ -53,6 +56,12 @@ public class PlayerMove : MonoBehaviour
             case "FINISH":
                 audioSource.clip = audioFinish;
                 break;
+            case "POTION":
+                audioSource.clip = audioPotion;
+                break;
+            case "DROP":
+                audioSource.clip = audioDrop;
+                break;
         }
         audioSource.Play();
     }
@@ -65,6 +74,7 @@ public class PlayerMove : MonoBehaviour
         {
             rigid.AddForce(Vector2.up * jumpPower, ForceMode2D.Impulse);
             anim.SetBool("isJumping", true);
+            //Debug.Log("is Jumping == true");
 
             //Sound
             PlaySound("JUMP");
@@ -85,10 +95,12 @@ public class PlayerMove : MonoBehaviour
         if(Mathf.Abs(rigid.velocity.x) < 0.3)
         {
             anim.SetBool("isWalking", false);
+            //Debug.Log("is Walking == false");
         }
         else
         {
             anim.SetBool("isWalking", true);
+            //Debug.Log("is Walking == true");
         }
         
     }
@@ -111,16 +123,18 @@ public class PlayerMove : MonoBehaviour
         if(rigid.velocity.y < 0)
         {
             Debug.DrawRay(rigid.position, Vector3.down, new Color(0, 1, 0));
+            
             // 레이캐스트를 이용한 플랫폼 탐지
             RaycastHit2D rayHit = Physics2D.Raycast(rigid.position, Vector2.down, 1, LayerMask.GetMask("Platform"));
 
             if (rayHit.collider != null)
             {
-                if (rayHit.distance < 0.5f)
+                //Debug.Log(rayHit.distance);
+                if (rayHit.distance < 0.9f)
                 {
-                    Debug.Log(rayHit.collider.name);
+                    //Debug.Log(rayHit.collider.name);
                     anim.SetBool("isJumping", false); // 바닥에 닿으면 점프 멈춤
-                    
+                    //Debug.Log("isJumping == false");
                 }
             }
         }
@@ -150,27 +164,34 @@ public class PlayerMove : MonoBehaviour
             bool isBronze = collision.gameObject.name.Contains("Bronze");
             bool isSilver = collision.gameObject.name.Contains("Silver");
             bool isGold = collision.gameObject.name.Contains("Gold");
+            bool isPotion = collision.gameObject.name.Contains("Potion");
 
             if (isBronze)
             {
                 gameManager.stagePoint += 50;
+                PlaySound("ITEM");
             }
             else if (isSilver)
             {
-                gameManager.stagePoint += 100;
+                gameManager.stagePoint += 80;
+                PlaySound("ITEM");
             }
             else if (isGold)
             {
-                gameManager.stagePoint += 300;
+                gameManager.stagePoint += 100;
+                PlaySound("ITEM");
+            }
+            else if (isPotion)
+            {
+                gameManager.HealthUp();
+                PlaySound("POTION");
             }
 
             // Deactive Item
             // 아이템(코인) 먹으면 사라지게끔
             collision.gameObject.SetActive(false);
-
-            //Sound
-            PlaySound("ITEM");
         }
+
         // 캐릭터가 Finish 깃발에 닿았을 때 -> 다음 스테이지 넘어감
         else if (collision.gameObject.tag == "Finish") 
         {

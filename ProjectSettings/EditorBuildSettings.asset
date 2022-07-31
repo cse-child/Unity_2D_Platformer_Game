@@ -11,4 +11,22 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Main.unity
     guid: a5fc5737d58ae0d42905196f3209a542
+  - enabled: 1
+    path: Assets/StageMain.unity
+    guid: 166b40616618b1849866f50b52a41743
+  - enabled: 0
+    path: Assets/RetryMain.unity
+    guid: 8e3172c14d7a33f4e956ed1cc93e3f3c
+  - enabled: 0
+    path: 
+    guid: 00000000000000000000000000000000
+  - enabled: 0
+    path: 
+    guid: 00000000000000000000000000000000
+  - enabled: 0
+    path: 
+    guid: 00000000000000000000000000000000
+  - enabled: 0
+    path: 
+    guid: 00000000000000000000000000000000
   m_configObjects: {}
